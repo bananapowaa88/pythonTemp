@@ -36,10 +36,10 @@ func _on_Generate_pressed():
 	
 	var file_read = File.new()
 	
-	if (file_read.open("res://question.txt", File.READ) != 0 or file_read.open("res://answers.txt", File.READ) != 0):
+	if (file_read.open("res://questions.txt", File.READ) != 0 or file_read.open("res://answers.txt", File.READ) != 0):
 		QuestionText.text = "Nem sikerült megnyitni a fájlt..."
 	else:
-		file_read.open("res://question.txt", File.READ)
+		file_read.open("res://questions.txt", File.READ)
 		
 		while not file_read.eof_reached():
 			var line = file_read.get_line()
@@ -58,6 +58,14 @@ func _on_Generate_pressed():
 		file_read.close()
 		
 		print("Sikerült")
+		
+		QuestionText.text = question[index][0]
+		for i in buttons.size():
+			buttons[i].text = question[index][i+1]
+		
+		nextButton.disabled = false
+		for button in buttons:
+			button.disabled = false
 		
 func nextQuestion():
 	if index == question.size()-2:
@@ -101,3 +109,18 @@ func _on_Button3_pressed():
 	
 func _on_Button4_pressed():
 	checkAnswer(ans_4)
+	
+func checkAnswer(answer):
+	for i in question.size():
+		
+		match index:
+			i:
+				if answer.text == str(answers[i]):
+					print("Jó válasz")
+					nextQuestion()
+					break
+				else:
+					print("Rossz válasz")
+					badAnswers += 1
+					answer.disabled = true
+					
